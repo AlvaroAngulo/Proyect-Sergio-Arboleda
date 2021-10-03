@@ -1,0 +1,42 @@
+CREATE TABLE games(
+    ID NUMBER(10) NOT NULL,
+    DEVELOPER VARCHAR2(20) NULL,
+    MINAGE NUMBER(20) NULL,
+    CATEGORY_ID NUMBER(10) NULL,
+    NAME VARCHAR2(400) NULL,
+    PRIMARY KEY(ID));
+
+
+-- Generate ID using sequence and trigger
+CREATE SEQUENCE games START WITH 1 INCREMENT BY 1;
+CREATE OR REPLACE TRIGGER games_seq_tr
+BEFORE INSERT ON games FOR EACH ROW
+WHEN (NEW.ID IS NULL)
+BEGIN
+SELECT games_seq.NEXTVAL INTO :NEW.ID FROM DUAL;
+END;
+
+GET
+SELECT*FROM games
+
+POST
+BEGIN
+    INSERT INTO games(ID,DEVELOPER,MINAGE,CATEGORY_ID,NAME) VALUES
+    (:id, :developer, :minage, :category_id,:name);
+    :status_code:=201;
+END;
+
+PUT
+
+BEGIN
+    UPDATE games SET DEVELOPER =:developer, MINAGE=:minage, 
+    CATEGORY_ID=:category_id,NAME=:name WHERE ID=:id;
+    :status_code:=201;
+END;
+
+DELETE
+
+BEGIN
+    DELETE FROM games WHERE ID=:id;
+    :status_code:=204;
+END;
